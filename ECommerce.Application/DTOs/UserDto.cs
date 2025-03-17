@@ -2,14 +2,14 @@
 
 namespace ECommerce.Application.DTOs;
 
-public class CustomerDto
+public class UserDto
 {
     public int Id { get; set; }
     public string Username { get; set; }
     public string Email { get; set; }
 }
 
-public class CustomerCreateDto
+public class UserCreateDto
 {
     public string Username { get; set; }
     [Required, DataType(DataType.EmailAddress)]
@@ -20,7 +20,7 @@ public class CustomerCreateDto
     public string ConfirmPassword { get; set; }
 }
 
-public class CustomerUpdateDto
+public class UserUpdateDto
 {
     public int Id { get; set; }
     public string Username { get; set; }

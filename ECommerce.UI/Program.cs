@@ -16,8 +16,8 @@ namespace ECommerce.UI
             //ICategoryService categoryService = new CategoryManager(categoryRepository);
             
 
-            ICustomerRepository customerRepository = new CustomerRepository(appDbContext);
-            ICustomerService customerService = new CustomerManager(customerRepository);
+            ICustomerRepository customerRepository = new UserRepository(appDbContext);
+            IUserService customerService = new UserManager(customerRepository);
             
             //categoryService.Add(new CategoryCreateDto { Name = "Fruit" });
             //categoryService.Add(new CategoryCreateDto { Name = "Vegetables" });
@@ -26,17 +26,7 @@ namespace ECommerce.UI
             string username, password;
             
            
-            do
-            {
-                Console.Write("Username:");
-                username = Console.ReadLine();
-                Console.Write("Password:");
-                password = Console.ReadLine();
-
-                var customer = customerService.GetAll(,)
-              
-
-            } while (customer == "Undefined");
+      
         }
     }
 }
