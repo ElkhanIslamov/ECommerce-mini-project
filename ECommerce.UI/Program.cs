@@ -7,16 +7,36 @@ using ECommerce.Infrastructure.EfCore.Context;
 
 namespace ECommerce.UI
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
             AppDbContext appDbContext = new AppDbContext();
-            ICategoryRepository categoryRepository = new CategoryRepository(appDbContext);
-            ICategoryService categoryService = new CategoryManager(categoryRepository);
+            //ICategoryRepository categoryRepository = new CategoryRepository(appDbContext);
+            //ICategoryService categoryService = new CategoryManager(categoryRepository);
+            
 
-            categoryService.Add(new CategoryCreateDto { Name = "Fruit" });
-            categoryService.Add(new CategoryCreateDto { Name = "Vegetables" });
+            ICustomerRepository customerRepository = new CustomerRepository(appDbContext);
+            ICustomerService customerService = new CustomerManager(customerRepository);
+            
+            //categoryService.Add(new CategoryCreateDto { Name = "Fruit" });
+            //categoryService.Add(new CategoryCreateDto { Name = "Vegetables" });
+
+            var dataContext = new AppDbContext();
+            string username, password;
+            
+           
+            do
+            {
+                Console.Write("Username:");
+                username = Console.ReadLine();
+                Console.Write("Password:");
+                password = Console.ReadLine();
+
+                var customer = customerService.GetAll(,)
+              
+
+            } while (customer == "Undefined");
         }
     }
 }
