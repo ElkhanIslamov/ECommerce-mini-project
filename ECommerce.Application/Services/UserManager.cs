@@ -9,9 +9,9 @@ namespace ECommerce.Application.Services;
 
 public class UserManager : IUserService
 {
-    private readonly ICustomerRepository _repository;
+    private readonly IUserRepository _repository;
 
-    public UserManager(ICustomerRepository repository)
+    public UserManager(IUserRepository repository)
     {
         _repository = repository;
     }

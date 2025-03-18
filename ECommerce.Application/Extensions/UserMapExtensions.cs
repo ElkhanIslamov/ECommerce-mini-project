@@ -18,7 +18,7 @@ public static class UserMapExtensions
         return new UserDto
         {
             Id = user.Id,
-            Username = user.Username,
+            User = user.Username,
            
         };
     }

@@ -12,5 +12,6 @@ namespace ECommerce.Domain.Entities
         [Required, DataType(DataType.Password)]
         public List<Order>? Orders { get; set; } = new List<Order>();
         public UserType UserType { get; set; }
+        public decimal Balance { get; set; }
     }
 }

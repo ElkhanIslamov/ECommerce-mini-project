@@ -7,7 +7,7 @@ using ECommerce.Domain.Entities;
 
 namespace ECommerce.Domain.Interfaces
 {
-    public interface ICustomerRepository:IRepository<User>
+    public interface IUserRepository:IRepository<User>
     {
     }
 }

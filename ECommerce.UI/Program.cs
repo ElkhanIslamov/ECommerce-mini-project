@@ -15,8 +15,7 @@ namespace ECommerce.UI
             //ICategoryRepository categoryRepository = new CategoryRepository(appDbContext);
             //ICategoryService categoryService = new CategoryManager(categoryRepository);
             
-
-            ICustomerRepository customerRepository = new UserRepository(appDbContext);
+            IUserRepository customerRepository = new UserRepository(appDbContext);
             IUserService customerService = new UserManager(customerRepository);
             
             //categoryService.Add(new CategoryCreateDto { Name = "Fruit" });

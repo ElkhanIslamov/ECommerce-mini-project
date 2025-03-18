@@ -1,31 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ECommerce.Domain.Enums;
 
 namespace ECommerce.Application.DTOs;
 
 public class UserDto
 {
     public int Id { get; set; }
-    public string Username { get; set; }
-    public string Email { get; set; }
+    public string? Username { get; set; }
+    public decimal Balanace { get; set; }
 }
 
-public class UserCreateDto
+public class UserCreateDto:UserDto
 {
-    public string Username { get; set; }
-    [Required, DataType(DataType.EmailAddress)]
-    public string Email { get; set; }
-    [Required, DataType(DataType.Password)]
+    public UserType Type { get; set; }
+    public string? Username { get; set; }
     public string Password { get; set; }
-    [Required, DataType(DataType.Password)]
-    public string ConfirmPassword { get; set; }
+    public decimal Balanace { get; set; }
+
 }
 
-public class UserUpdateDto
+public class UserUpdateDto:UserDto
 {
     public int Id { get; set; }
-    public string Username { get; set; }
-    [Required, DataType(DataType.EmailAddress)]
-    public string Password { get; set; }
-    [Required, DataType(DataType.Password)]
-    public string ConfirmPassword { get; set; }
+    public string? Username { get; set; }
+    public decimal Balanace { get; set; }
+
 }

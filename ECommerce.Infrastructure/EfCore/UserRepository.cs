@@ -4,7 +4,7 @@ using ECommerce.Infrastructure.EfCore.Context;
 
 namespace ECommerce.Infrastructure.EfCore;
 
-public class UserRepository : EfCoreRepository<User>, ICustomerRepository
+public class UserRepository : EfCoreRepository<User>, IUserRepository
 {
     public UserRepository(AppDbContext context) : base(context)
     {
