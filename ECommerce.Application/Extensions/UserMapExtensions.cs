@@ -18,7 +18,8 @@ public static class UserMapExtensions
         return new UserDto
         {
             Id = user.Id,
-            User = user.Username,
+            UserType= Domain.Enums.UserType.User,
+                      
            
         };
     }

@@ -8,6 +8,7 @@ public class UserDto
     public int Id { get; set; }
     public string? Username { get; set; }
     public decimal Balanace { get; set; }
+    public UserType UserType { get; set; }
 }
 
 public class UserCreateDto:UserDto

@@ -46,8 +46,8 @@ public class CategoryManager : ICategoryService
                 Name = item.Name
             });
         }
-
         return categoryDtoList;
+
     }
 
     public CategoryDto GetById(int id)
@@ -82,4 +82,5 @@ public class CategoryManager : ICategoryService
 
         _repository.Update(category);
     }
+    
 }

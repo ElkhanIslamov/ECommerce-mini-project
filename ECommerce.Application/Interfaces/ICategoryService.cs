@@ -8,7 +8,7 @@ public interface ICategoryService
 {
     CategoryDto GetById(int id);
     CategoryDto Get(Expression<Func<Category, bool>> predicate);
-    List<CategoryDto> GetAll(Expression<Func<Category, bool>>? predicate, bool asNoTracking);
+    List<CategoryDto> GetAll(Expression<Func<Category, bool>>? predicate = null, bool asNoTracking = false);
     void Add(CategoryCreateDto createDto);
     void Update(CategoryUpdateDto updateDto);
     void Remove(int id);

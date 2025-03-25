@@ -23,7 +23,7 @@ public class UserManager : IUserService
         _repository.Add(user);
     }
 
-    public UserDto Get(Expression<Func<User, bool>> predicate)
+    public UserDto Get(Expression<Func<User?, bool>> predicate)
     {
         var user = _repository.Get(predicate);
 
@@ -32,7 +32,7 @@ public class UserManager : IUserService
         return userDto;
     }
 
-    public List<UserDto> GetAll(Expression<Func<User, bool>>? predicate, bool asNoTracking)
+    public List<UserDto> GetAll(Expression<Func<User, bool>>? predicate = null, bool asNoTracking = false)
     {
         var users = _repository.GetAll(predicate, asNoTracking);
 

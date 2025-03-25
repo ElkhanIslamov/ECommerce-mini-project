@@ -1,5 +1,6 @@
 ﻿using ECommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ECommerce.Infrastructure.EfCore.Context;
 
@@ -15,4 +16,5 @@ public class AppDbContext : DbContext
     {
         optionsBuilder.UseSqlServer("Server=DESKTOP-JQ9VP53;Database=Pb304Ecommerce;Trusted_Connection=True;TrustServerCertificate=True");
     }
+   
 }
