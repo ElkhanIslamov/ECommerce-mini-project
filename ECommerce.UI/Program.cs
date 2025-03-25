@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Channels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
@@ -8,7 +10,7 @@ using ECommerce.Domain.Enums;
 using ECommerce.Domain.Interfaces;
 using ECommerce.Infrastructure.EfCore;
 using ECommerce.Infrastructure.EfCore.Context;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.UI
 {
@@ -16,97 +18,165 @@ namespace ECommerce.UI
     {
         static void Main(string[] args)
         {
-            AppDbContext appDbContext = new AppDbContext();
-            ICategoryRepository categoryRepository = new CategoryRepository(appDbContext);
-            ICategoryService categoryService = new CategoryManager(categoryRepository);
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlServer("Your_Connection_String_Here") // Replace with actual connection string
+                .Options;
 
-            IUserRepository userRepository = new UserRepository(appDbContext);
-            IUserService userService = new UserManager(userRepository);
-
-            IProductRepository productRepository = new ProductRepository(appDbContext);
-            IProductService productService = new ProductManager(productRepository);
-
-            IOrderRepository orderRepository = new OrderRepository(appDbContext);
-            IOrderService orderService = new OrderManager(orderRepository);
-
-            Basket basket = new Basket();
-
-            string username, password;
-
-            Console.Write("Username:");
-            username = Console.ReadLine();
-            Console.Write("Password:");
-            password = Console.ReadLine();
-
-            var user = userService.Get(u => u.Username == username && u.Password == password);
-
-            if (user.UserType == UserType.Admin)
+            using (AppDbContext appDbContext = new AppDbContext(options))
             {
-                Console.WriteLine("Choose one of commands");
-                Console.WriteLine("Press one - To show all products");
-                Console.WriteLine("Press two - To add  new product");
-                int command = int.Parse(Console.ReadLine());
+                ICategoryRepository categoryRepository = new CategoryRepository(appDbContext);
+                ICategoryService categoryService = new CategoryManager(categoryRepository);
 
-                if (command == 1)
+                IUserRepository userRepository = new UserRepository(appDbContext);
+                IUserService userService = new UserManager(userRepository);
+
+                IProductRepository productRepository = new ProductRepository(appDbContext);
+                IProductService productService = new ProductManager(productRepository);
+
+                IOrderRepository orderRepository = new OrderRepository(appDbContext);
+                IOrderService orderService = new OrderManager(orderRepository);
+
+                // Ensure Basket is initialized
+                Basket basket = new Basket
                 {
-                    foreach (var item in productService.GetAll(p => p.Id < 100))
-                    {
-                        Console.WriteLine(item.Name);
-                    };
-                }
-                else if (command == 2)
-                {
-                    Console.WriteLine("Please choose one of categories");
-
-                    foreach (var item in categoryService.GetAll(p => p.Id < 100))
-                    {
-                        Console.WriteLine($"{item.Id} - {item.Name}");
-                    };
-                    int id = int.Parse(Console.ReadLine());
-                    Console.Write("Add name :");
-                    string name1 = Console.ReadLine();
-                    Console.Write("Add price:");
-                    decimal price = decimal.Parse(Console.ReadLine());
-
-                    productService.Add(new ProductCreateDto
-                    {
-                        CategoryId = id,
-                        Name = name1,
-                        Price = price
-                    });
-
-                }
-            }
-            if (user.UserType == UserType.User)
-            {
-                Console.WriteLine("Here is our products");
-                foreach (var product in productService.GetAll(p => p.Id < 100))
-                {
-                    Console.WriteLine($"{product.Id} {product.Name} {product.CategoryName} {product.Price}");
+                    BasketItems = new List<BasketItem>() // Initialize BasketItems list
                 };
 
-                Console.WriteLine("Add to Basket press id number");
-                int productId = int.Parse(Console.ReadLine());
-                Console.WriteLine("Press 2 number for customer Id");
-                int userId = int.Parse(Console.ReadLine());
-                Console.WriteLine("Select number of count");
-                int productCount = int.Parse(Console.ReadLine());
-                
-                basket.UserId = userId;
-                basket.BasketItems.Add(new BasketItem 
-                { 
-                    ProductCount = productCount,
-                    ProductId=productId 
-                });
+                Console.Write("Username: ");
+                string username = Console.ReadLine();
+                Console.Write("Password: ");
+                string password = Console.ReadLine();
 
-                         
-                               
+                var user = userService.Get(u => u.Username == username && u.Password == password);
 
+                if (user == null)
+                {
+                    Console.WriteLine("Invalid username or password. Exiting...");
+                    return;
+                }
+
+                if (user.UserType == UserType.Admin)
+                {
+                    Console.WriteLine("Choose one of the commands:");
+                    Console.WriteLine("1 - Show all products");
+                    Console.WriteLine("2 - Add new product");
+
+                    if (int.TryParse(Console.ReadLine(), out int command))
+                    {
+                        if (command == 1)
+                        {
+                            var products = productService.GetAll(p => p.Id < 100);
+                            if (!products.Any())
+                            {
+                                Console.WriteLine("No products found.");
+                            }
+                            else
+                            {
+                                foreach (var item in products)
+                                {
+                                    Console.WriteLine(item.Name);
+                                }
+                            }
+                        }
+                        else if (command == 2)
+                        {
+                            Console.WriteLine("Choose a category:");
+
+                            var categories = categoryService.GetAll(p => p.Id < 100);
+                            foreach (var item in categories)
+                            {
+                                Console.WriteLine($"{item.Id} - {item.Name}");
+                            }
+
+                            Console.Write("Enter category ID: ");
+                            if (int.TryParse(Console.ReadLine(), out int categoryId))
+                            {
+                                Console.Write("Enter product name: ");
+                                string productName = Console.ReadLine();
+                                Console.Write("Enter price: ");
+                                if (decimal.TryParse(Console.ReadLine(), out decimal price))
+                                {
+                                    productService.Add(new ProductCreateDto
+                                    {
+                                        CategoryId = categoryId,
+                                        Name = productName,
+                                        Price = price
+                                    });
+                                    Console.WriteLine("Product added successfully.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid price.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid category ID.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid command.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input.");
+                    }
+                }
+                else if (user.UserType == UserType.User)
+                {
+                    Console.WriteLine("Available products:");
+                    var products = productService.GetAll(p => p.Id < 100);
+
+                    foreach (var product in products)
+                    {
+                        Console.WriteLine($"{product.Id} - {product.Name} - {product.CategoryName} - {product.Price}");
+                    }
+
+                    Console.Write("Enter product ID to add to basket: ");
+                    if (int.TryParse(Console.ReadLine(), out int productId))
+                    {
+                        var selectedProduct = productService.Get(p => p.Id == productId);
+                        if (selectedProduct == null)
+                        {
+                            Console.WriteLine("Invalid product ID.");
+                            return;
+                        }
+
+                        Console.Write("Enter quantity: ");
+                        if (int.TryParse(Console.ReadLine(), out int productCount) && productCount > 0)
+                        {
+                            basket.UserId = user.Id;
+
+                            // Ensure product is not already in the basket
+                            var existingItem = basket.BasketItems.FirstOrDefault(b => b.ProductId == productId);
+                            if (existingItem != null)
+                            {
+                                existingItem.ProductCount += productCount;
+                            }
+                            else
+                            {
+                                basket.BasketItems.Add(new BasketItem
+                                {
+                                    ProductId = productId,
+                                    ProductCount = productCount
+                                });
+                            }
+
+                            Console.WriteLine($"{productCount} units of {selectedProduct.Name} added to basket.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid quantity.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid product ID.");
+                    }
+                }
             }
         }
     }
-
 }
-
-
-

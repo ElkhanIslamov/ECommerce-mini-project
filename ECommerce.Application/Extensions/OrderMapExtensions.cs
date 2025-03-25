@@ -1,55 +1,53 @@
 ﻿using ECommerce.Application.DTOs;
 using ECommerce.Domain.Entities;
 
-namespace ECommerce.Application.Extensions;
-
-public static class OrderMapExtensions
+namespace ECommerce.Application.Extensions
 {
-    public static Order ToOrder(this OrderCreateDto createDto)
+    public static class OrderMapExtensions
     {
-        return new Order
+        public static Order ToOrder(this OrderCreateDto createDto)
         {
-            UserId = createDto.UserId,
-            CreatedAt = DateTime.UtcNow,
-            OrderItems = createDto.OrderItems.Select(x=>new OrderItem {ProductId=x.ProductId, Quntity=x.Quantity }).ToList()
-        };
-    }
-    public static OrderDto ToOrderDto(this Order order)
-    {
-        return new OrderDto
-        {
-            Id = order.Id
-        };
-    }
-    //public static Basket ToOrderCreateDto(this OrderCreateDto createDto)
-    //{
-    //    return new Basket
-    //    {
-    //        UserId = createDto.UserId,
-    //        BasketItems = createDto.  //Select(x => new BasketItem { ProductId = x.ProductId, ProductCount = x.ProductCount }).ToList()
-
-    //    };
-    //}
-
-    public static OrderItemCreateDto ToOrderItemCreateDto(this Basket basket)
-    {
-        return new OrderItemCreateDto
-        {
-            OrderId = basket.UserId,
-            ProductId = basket.BasketItems.Select(x => new BasketItem
+            return new Order
             {
-               ProductCount = x.ProductCount,
-               ProductId = x.ProductId,
+                UserId = createDto.UserId,
+                CreatedAt = DateTime.UtcNow,
+                OrderItems = createDto.OrderItems
+                    .Select(x => new OrderItem { ProductId = x.ProductId, Quntity = x.Quantity })
+                    .ToList()
+            };
+        }
 
-            })
-        };
+        public static OrderDto ToOrderDto(this Order order)
+        {
+            return new OrderDto
+            {
+                Id = order.Id
+            };
+        }
 
-            //UserId = basket.UserId,
-            //OrderItems = basket.BasketItems.Select(x => new OrderItem
-            //{
-            //    Id = x.ProductId,
-            //    ProductCount = x.ProductCount
-            //})
+        public static OrderCreateDto ToOrderCreateDto(this Basket basket)
+        {
+            return new OrderCreateDto
+            {
+                UserId = basket.UserId,
+                OrderItems = basket.BasketItems
+                    .Select(x => new OrderItemCreateDto
+                    {
+                        ProductId = x.ProductId,
+                        Quantity = x.ProductCount
+                    })
+                    .ToList()
+            };
+        }
+
+        public static List<OrderItemCreateDto> ToOrderItemCreateDtoList(this Basket basket)
+        {
+            return basket.BasketItems.Select(x => new OrderItemCreateDto
+            {
+                ProductId = x.ProductId,
+                Quantity = x.ProductCount
+            }).ToList();
+        }
     }
-
 }
+
