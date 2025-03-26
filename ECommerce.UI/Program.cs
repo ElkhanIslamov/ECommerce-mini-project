@@ -22,7 +22,7 @@ namespace ECommerce.UI
                 .UseSqlServer("Your_Connection_String_Here") // Replace with actual connection string
                 .Options;
 
-            using (AppDbContext appDbContext = new AppDbContext(options))
+            using (AppDbContext appDbContext = new AppDbContext())
             {
                 ICategoryRepository categoryRepository = new CategoryRepository(appDbContext);
                 ICategoryService categoryService = new CategoryManager(categoryRepository);
@@ -39,10 +39,14 @@ namespace ECommerce.UI
                 Basket basket = new Basket { BasketItems = new List<BasketItem>() };
 
                 Console.WriteLine("Welcome to E-Commerce site");
+                Console.WriteLine(new string('-',50));
+                Console.WriteLine("Enter user name");
                 Console.Write("Username: ");
                 string username = Console.ReadLine();
+                Console.WriteLine("Enter user name");
                 Console.Write("Password: ");
                 string password = Console.ReadLine();
+                Console.WriteLine(new string('-', 50));
 
                 var user = userService.Get(u => u.Username == username && u.Password == password);
 
@@ -101,7 +105,7 @@ namespace ECommerce.UI
             {
                 foreach (var item in products)
                 {
-                    Console.WriteLine($"{item.Id} - {item.Name} - {item.Price:C}");
+                    Console.WriteLine($"{item.Id} - {item.Name} -{item.CategoryName}- {item.Price:C}");
                 }
             }
         }
@@ -160,13 +164,15 @@ namespace ECommerce.UI
         static void UserMenu(UserDto user, Basket basket, IProductService productService)
         {
             Console.WriteLine("Available products:");
+            Console.WriteLine(new string('-', 50));
             var products = productService.GetAll(p => p.Id < 100);
 
             foreach (var product in products)
             {
-                Console.WriteLine($"{product.Id} - {product.Name} - {product.CategoryName} - {product.Price:C}");
+                Console.WriteLine($"{product.Id} - {product.Name} - {product.CategoryName} - {product.Price}");
             }
 
+            Console.WriteLine(new string('-', 50));
             Console.Write("Enter product ID to add to basket: ");
             if (!int.TryParse(Console.ReadLine(), out int productId))
             {
@@ -203,10 +209,11 @@ namespace ECommerce.UI
                     ProductCount = productCount
                 });
             }
+            Console.WriteLine(new string('-', 50));
 
             // Display success message in green color
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"✅ {productCount} units of {selectedProduct.Name} added to basket.");
+            Console.WriteLine($" {productCount} units of {selectedProduct.Name} added to basket.");
             Console.ResetColor();
         }
     }
